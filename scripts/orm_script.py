@@ -1,21 +1,21 @@
-from core.models import Restaurant,Rating
+from core.models import Restaurant,Rating,Sale
 from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
 
 def run():
-    # restaurant = Restaurant.objects.first()
-    # print(restaurant.name)
-    # restaurant.name = 'Indian Hotel'
-    # restaurant.save()
+    user = User.objects.first()
+    restaurant = Restaurant.objects.first()
+    rating,created = Rating.objects.get_or_create(
+        restaurant = restaurant,
+        user=user,
+        rating = 4
+    )
+    if created:
+        pass
 
-    # print(Rating.objects.exclude(rating__gte= 3))
-    # print(Rating.objects.filter(rating = 5))
 
-    rating = Rating.objects.first()
-    print(rating.restaurant)
-    pprint(connection.queries)
 
 # Restaurant.objects.all() #fetch all the objects form the database
 # Restaurant.objects.create() to create data

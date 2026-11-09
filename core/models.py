@@ -33,7 +33,7 @@ class Rating(models.Model):
     rating = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return self.rating
+        return str(self.rating)
 
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete= models.SET_NULL, null=True)

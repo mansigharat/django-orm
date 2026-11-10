@@ -9,7 +9,7 @@ def run():
     restaurant = Restaurant.objects.first()
 
     rating = Rating(user = user, restaurant = restaurant, rating=4)
-    rating.full_clean()
+    #rating.full_clean()
     rating.save()
 
 

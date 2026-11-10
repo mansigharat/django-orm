@@ -7,14 +7,10 @@ from pprint import pprint
 def run():
     user = User.objects.first()
     restaurant = Restaurant.objects.first()
-    rating,created = Rating.objects.get_or_create(
-        restaurant = restaurant,
-        user=user,
-        rating = 4
-    )
-    if created:
-        pass
 
+    rating = Rating(user = user, restaurant = restaurant, rating=4)
+    rating.full_clean()
+    rating.save()
 
 
 # Restaurant.objects.all() #fetch all the objects form the database

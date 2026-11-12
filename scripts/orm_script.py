@@ -5,12 +5,18 @@ from django.contrib.auth.models import User
 from pprint import pprint
 
 def run():
-    Restaurant.objects.all().delete()
+    
+    print(Restaurant.objects.count())
+    print(Rating.objects.count())
+    print(Sale.objects.count())
 
     pprint(connection.queries)
 
 
 '''   
+
+    Restaurant.objects.all().delete()
+
 print(restaurant.update(
         date_opened = timezone.now() - timezone.timedelta(days=365),
         website = "https://test.com"

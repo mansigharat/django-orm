@@ -1,12 +1,8 @@
 from django.shortcuts import render
 from .forms import RestaurantForm
+from core.models import Restaurant, Sale, Rating
 
 def index(request):
-    if request.method == "POST":
-        form = RestaurantForm(request.POST or None)
-        if form.is_valid():
-            print(form.cleaned_data)
-        else:
-            return render(request, 'index.html', {'form': form})
-    context = {'form': RestaurantForm()}
+    restaurants = Restaurant.objects.filter(name__istartswith = 'c').prefetch_related('ratings','sales')
+    context = {'restaurants' : restaurants}
     return render(request, 'index.html', context)

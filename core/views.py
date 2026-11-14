@@ -1,23 +1,20 @@
 from django.shortcuts import render
 from .forms import RestaurantForm
-from core.models import Restaurant, Sale, Rating
+from core.models import Restaurant, Sale, Rating, StaffRestaurant
 from django.db.models import Sum,Prefetch
 from django.utils import timezone
 
 def index(request):
-    month_ago = timezone.now() - timezone.timedelta(days =30)
-    monthly_sales = Prefetch(
-        'sales',
-        queryset = Sale.objects.filter(datetime__gte = month_ago)
-    )
-    r = Restaurant.objects.prefetch_related('ratings',monthly_sales).filter(ratings__rating = 5) 
-    print(r)
+    jobs = StaffRestaurant.objects.prefetch_related('restaurant','staff')
+
+    for job in jobs:
+        print(job.restaurant.name)
+        print(job.staff.name)
     return render(request, 'index.html')
 
 
 
 """
-
     ratings = Rating.objects.only('rating','restaurant__name').select_related('restaurant')
     context = {'ratings' : ratings}
 

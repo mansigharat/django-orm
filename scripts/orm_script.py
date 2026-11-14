@@ -1,15 +1,26 @@
-from core.models import Restaurant,Rating,Sale,Staff
+from core.models import Restaurant,Rating,Sale,Staff,StaffRestaurant
 from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
 from django.db.models.functions import Lower
 
-def run():
-    staff = Staff.objects.get_or_create(name = "John Wick")
+# add , all , count , remove , set, clear, create, filter, exclude
 
+def run():
+    staff , created = Staff.objects.get_or_create(name='Jonh deo')
+    staff.restaurants.clear()
+
+    restaurant = Restaurant.objects.first()
+    staff.restaurants.add(restaurant, through_defaults={'salary': 50_000})
 
 '''   
+
+    staff,created = Staff.objects.get_or_create(name = "John Wick")
+    # print(staff.restaurants.all())
+    # staff.restaurants.add(Restaurant.objects.first())
+    india = staff.restaurants.filter(restaurant_type = Restaurant.TypeChoices.INDIAN)
+    print(india)
     chinese = Restaurant.TypeChoices.CHINESE
 
     sales = Sale.objects.filter(restaurant__restaurant_type = chinese)
@@ -56,7 +67,9 @@ print(restaurant.update(
 
     restaurant.name = 'New Restaurant Name'
     restaurant.save(update_fields =['name']) # used to update only specific field
-    print(connection.queries)'''
+    print(connection.queries)
+    
+'''
 
 
 # Restaurant.objects.all() fetch all the objects form the database

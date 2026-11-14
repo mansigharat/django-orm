@@ -1,4 +1,4 @@
-from core.models import Restaurant,Rating,Sale
+from core.models import Restaurant,Rating,Sale,Staff
 from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
@@ -6,16 +6,15 @@ from pprint import pprint
 from django.db.models.functions import Lower
 
 def run():
+    staff = Staff.objects.get_or_create(name = "John Wick")
 
+
+'''   
     chinese = Restaurant.TypeChoices.CHINESE
 
     sales = Sale.objects.filter(restaurant__restaurant_type = chinese)
     print(sales)
     pprint(connection.queries)
-
-
-'''   
-
     sales  = Sale.objects.order_by('-datetime')
     print(sales)
     pprint(connection.queries)

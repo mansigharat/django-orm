@@ -3,17 +3,23 @@ from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
+from django.db.models.functions import Upper 
 from django.db.models.functions import Lower
 import random
-# add , all , count , remove , set, clear, create, filter, exclude
+
 
 def run():
+    restaurants = Restaurant.objects.values(name_upper  = Upper('name'))[:3]
+    print(restaurants)
+
+'''  
+ restaurants = Restaurant.objects.values('name','date_opened').first()
+    print(restaurants) 
     staff , created = Staff.objects.get_or_create(name='Jonh deo')
     staff.restaurants.set(
         Restaurant.objects.all()[:10], 
         through_defaults = {'salary':random.randint(35_000,85_000)}
     )
-'''   
     staff.restaurants.clear()
 
     restaurant = Restaurant.objects.first()

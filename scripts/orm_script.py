@@ -3,16 +3,30 @@ from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
-from django.db.models.functions import Upper 
-from django.db.models.functions import Lower
+from django.db.models import Count, Avg,Min,Max,Sum
+from django.db.models.functions import Upper ,Lower
 import random
 
-
 def run():
+    one_month_ago = timezone.now() - timezone.timedelta(days = 31)
+    sales = Sale.objects.filter(datetime__gte = one_month_ago)
+    print(sales.aggregate(
+        avg = Avg('income'),
+        min = Min('income'),
+        max = Max('income'),
+        sum = Sum('income'),
+        ))
+
+    
+    # pprint(connection.queries)
+    # restaurants = Restaurant.objects.values_list('latitude', flat = True)
+    # print(restaurants)
+    # print(Rating.objects.filter(restaurant__name__startswith='c').aggregate(avg = Avg('rating')))
+'''  
+    # IT = Restaurant.TypeChoices.ITALIAN
+
     restaurants = Restaurant.objects.values(name_upper  = Upper('name'))[:3]
     print(restaurants)
-
-'''  
  restaurants = Restaurant.objects.values('name','date_opened').first()
     print(restaurants) 
     staff , created = Staff.objects.get_or_create(name='Jonh deo')
@@ -76,14 +90,13 @@ print(restaurant.update(
     restaurant.name = 'New Restaurant Name'
     restaurant.save(update_fields =['name']) # used to update only specific field
     print(connection.queries)
-    
+
+    Restaurant.objects.all() fetch all the objects form the database
+    Restaurant.objects.create() to create data
+    Restaurant.objects.count() count number of rows in database
+    Restaurant.objects.last() return last record
+    Restaurant.objects.first() return first record
+    Restaurant.objects.filter() take the condition and return based on matched condition
+    Restaurant.objects.exclude() it is opposite of filter function
+     
 '''
-
-
-# Restaurant.objects.all() fetch all the objects form the database
-# Restaurant.objects.create() to create data
-# Restaurant.objects.count() count number of rows in database
-# Restaurant.objects.last() return last record
-# Restaurant.objects.first() return first record
-# Restaurant.objects.filter() take the condition and return based on matched condition
-# Restaurant.objects.exclude() it is opposite of filter function

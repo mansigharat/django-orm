@@ -8,12 +8,9 @@ from django.db.models.functions import Upper, Lower, Length, Concat
 import random
 
 def run():
-    restaurant = Restaurant.objects.values('restaurant_type').annotate(
-        num_ratings=Count('ratings'),
-        avg_rating=Avg('ratings__rating')
-        )
+    restaurant = Restaurant.objects.annotate(total_sales = Sum('sales__income')).order_by('total_sales')
     print(restaurant)
-
+#
 
     pprint(connection.queries)
     # restaurants = Restaurant.objects.values_list('latitude', flat = True)

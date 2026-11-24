@@ -1,13 +1,43 @@
-from core.models import Restaurant,Rating,Sale,Staff,StaffRestaurant
+from core.models import Restaurant, Rating, Sale, Staff, StaffRestaurant
 from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
-from django.db.models import Count, Avg,Min,Max,Sum
-from django.db.models.functions import Upper ,Lower
+from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum
+from django.db.models.functions import Upper, Lower, Length, Concat
 import random
 
 def run():
+    restaurant = Restaurant.objects.values('restaurant_type').annotate(
+        num_ratings=Count('ratings'),
+        avg_rating=Avg('ratings__rating')
+        )
+    print(restaurant)
+
+
+    pprint(connection.queries)
+    # restaurants = Restaurant.objects.values_list('latitude', flat = True)
+    # print(restaurants)
+    # print(Rating.objects.filter(restaurant__name__startswith='c').aggregate(avg = Avg('rating')))
+'''  
+
+    restaurants = Restaurant.objects.annotate(total_sales = Sum('sales__income')).values(
+        'name', 'total_sales'
+    )
+    print([r['total_sales'] for r in restaurants])
+
+concatenation = Concat(
+        'name',Value(' [Rating: '),Avg('ratings__rating'), Value(']'),
+    output_field = CharField()
+    )
+    restaurants = Restaurant.objects.annotate(message = concatenation)
+
+    for r in restaurants:
+        print(r.message)
+restaurants = Restaurant.objects.annotate(len_name=Length('name')).filter(
+        len_name__gt = 10
+    )
+    print(restaurants.values('name','len_name'))
     one_month_ago = timezone.now() - timezone.timedelta(days = 31)
     sales = Sale.objects.filter(datetime__gte = one_month_ago)
     print(sales.aggregate(
@@ -16,13 +46,6 @@ def run():
         max = Max('income'),
         sum = Sum('income'),
         ))
-
-    
-    # pprint(connection.queries)
-    # restaurants = Restaurant.objects.values_list('latitude', flat = True)
-    # print(restaurants)
-    # print(Rating.objects.filter(restaurant__name__startswith='c').aggregate(avg = Avg('rating')))
-'''  
     # IT = Restaurant.TypeChoices.ITALIAN
 
     restaurants = Restaurant.objects.values(name_upper  = Upper('name'))[:3]
@@ -98,5 +121,11 @@ print(restaurant.update(
     Restaurant.objects.first() return first record
     Restaurant.objects.filter() take the condition and return based on matched condition
     Restaurant.objects.exclude() it is opposite of filter function
+
+
+
+Two commonly used methods are aggregate () and annotate (). 
+aggregate () summarizes data across the entire queryset (e.g., total, average, count). 
+annotate () computes and adds calculated values for each individual object in the queryset.
      
 '''

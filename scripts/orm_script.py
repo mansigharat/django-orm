@@ -3,25 +3,35 @@ from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
-from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum, F
+from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum, F, Q
 from django.db.models.functions import Upper, Lower, Length, Concat
 import random
 
 def run():
-    sales = Sale.objects.annotate(
-        profit= F('income') - F('expenditure')
-    ).order_by('-profit')
-    print(sales.first().profit)
-    # for sale in sales:
-    #     sale.expenditure = random.uniform(5,100)
-
-    # Sale.objects.bulk_update(sales, ['expenditure'])
+    print(
+        Restaurant.objects.filter(name__icontains = "1")
+    )
     pprint(connection.queries)
 
     
 
 
 ''' 
+    it = Restaurant.TypeChoices.ITALIAN
+    mex = Restaurant.TypeChoices.MEXICAN
+    r = Restaurant.objects.filter(
+        Q(restaurant_type=it)| Q(restaurant_type = mex)
+    )
+    print(r)
+
+    # sales = Sale.objects.annotate(
+    #     profit= F('income') - F('expenditure')
+    # ).order_by('-profit')
+    # print(sales.first().profit)
+    # for sale in sales:
+    #     sale.expenditure = random.uniform(5,100)
+
+    # Sale.objects.bulk_update(sales, ['expenditure'])
     Rating.objects.update(rating = F('rating')/2)
 
     rating = Rating.objects.filter(rating = 3).first()

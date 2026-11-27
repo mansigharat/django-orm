@@ -8,6 +8,23 @@ from django.db.models.functions import Upper, Lower, Length, Concat
 import random
 
 def run():
+    # restaurant = Restaurant.objects.first()
+    # restaurant2 = Restaurant.objects.last()
+
+    # restaurant.capacity = 10
+
+    # restaurant2.capacity = 20
+
+    print(
+        Restaurant.objects.order_by('capacity').values('capacity')
+            
+        )
+    pprint(connection.queries)
+    
+
+
+''' 
+
     profited = Q(income__gt = F('expenditure'))
     name_has_number = Q(restaurant__name__regex = r"[0-9]+")
 
@@ -17,12 +34,7 @@ def run():
     for sale in sales:
         if sale.income <= sale.expenditure:
             print(sale.restaurant.name)
-    pprint(connection.queries)
-
     
-
-
-''' 
     recently_opened = ~Q(date_opened__gt = timezone.now() - timezone.timedelta(days = 40))
     restaurants = Restaurant.objects.filter(recently_opened)
     it = Restaurant.TypeChoices.ITALIAN

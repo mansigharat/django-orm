@@ -26,6 +26,7 @@ class Restaurant(models.Model):
     longitude = models.FloatField(validators = [MinValueValidator(-180), MaxValueValidator(180)])
     restaurant_type = models.CharField(max_length=2, choices = TypeChoices.choices)
     capacity = models.PositiveSmallIntegerField(null = True, blank = True)
+    nickname = models.CharField(max_length = 200, null = True, blank = True)
 
     class Meta:
         ordering = [Lower('name')]

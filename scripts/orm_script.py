@@ -6,25 +6,26 @@ from pprint import pprint
 from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum, F, Q
 from django.db.models.functions import Upper, Lower, Length, Concat
 import random
+from django.db.models.functions import Coalesce
 
 def run():
+    print(
+        Restaurant.objects.annotate(
+            name_value = Coalesce(F('nickname'), F('name'))
+        ).values('name_value')
+    )
+
+
+''' 
+    print(
+        Restaurant.objects.filter(capacity__isnull = False).order_by('-capacity').values('capacity')
+    )
     # restaurant = Restaurant.objects.first()
     # restaurant2 = Restaurant.objects.last()
 
     # restaurant.capacity = 10
 
     # restaurant2.capacity = 20
-
-    print(
-        Restaurant.objects.order_by('capacity').values('capacity')
-            
-        )
-    pprint(connection.queries)
-    
-
-
-''' 
-
     profited = Q(income__gt = F('expenditure'))
     name_has_number = Q(restaurant__name__regex = r"[0-9]+")
 

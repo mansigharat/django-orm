@@ -3,20 +3,43 @@ from django.utils import timezone
 from django.db import connection
 from django.contrib.auth.models import User
 from pprint import pprint
-from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum, F, Q
+from django.db.models import Count, Avg, Min, Max, CharField, Value, Sum, F, Q, Case, When, Value
 from django.db.models.functions import Upper, Lower, Length, Concat
 import random
 from django.db.models.functions import Coalesce
 
 def run():
-    print(
-        Restaurant.objects.annotate(
-            name_value = Coalesce(F('nickname'), F('name'))
-        ).values('name_value')
+    restaurants = Restaurant.objects.annotate(
+        avg = Avg('ratings__rating'),
+        num_ratings = Count('ratings__pk')
     )
 
+    print(restaurants.values('avg', 'num_ratings'))
+    restaurants = restaurants.annotate(
+    rating_bucket=Case(
+        When(avg__gt=3.5, then=Value('Highly Rated')),
+        When(avg__range=(2.5, 3.5), then=Value('Average Rated')),
+        When(avg__lt=2.5, then=Value('Bad Rated')),
+        default=Value('Not Rated'),
+        output_field=CharField()
+    )
+)
 
+    print(restaurants.filter(rating_bucket='Highly Rated'))
+    # print(connection.query)
 ''' 
+    italian = Restaurant.TypeChoices.ITALIAN
+
+    r = Restaurant.objects.annotate(
+        is_italian = Case(
+            When(restaurant_type = italian, then = True),
+            default = False
+        )
+    )
+
+    print(
+        r.filter(is_italian = True)
+    )
     print(
         Restaurant.objects.filter(capacity__isnull = False).order_by('-capacity').values('capacity')
     )
@@ -172,3 +195,4 @@ aggregate () summarizes data across the entire queryset (e.g., total, average, c
 annotate () computes and adds calculated values for each individual object in the queryset.
      
 '''
+
